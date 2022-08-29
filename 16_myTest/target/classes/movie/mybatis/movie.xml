@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="movie.MovieBean">
+	<!-- SqlMapConfig.xml에서myMovie를 movie.MovieBean로 설정했다 -->
+	<select id="getMovieList" resultType="myMovie">
+		select * from movie
+		<if test="whatColumn == 'genre'">
+		where genre like #{keyword}
+	</if> 
+	<if test="whatColumn == 'grade'">
+		where grade like #{keyword}
+	</if> 
+	<if test="whatColumn == 'actor'">
+		where actor like #{keyword}
+	</if> 
+		order by num desc
+	</select>
+	
+	<select id="CountMovie" resultType="int">
+  		select count(*) from movie
+  		<if test="whatColumn == 'genre'">
+  			where genre like #{keyword}
+  		</if>
+  		<if test="whatColumn == 'grade'">
+  			where grade like #{keyword}
+  		</if>
+  		<if test="whatColumn == 'actor'">
+  			where actor like #{keyword}
+  		</if>
+  	</select>
+  	<insert id="InsertMovie">
+  		insert into movie values(mv_seq.nextval,#{title},#{continent},#{nation},#{genre},#{grade},#{actor})
+  	</insert>
+  	<!-- 
+  	상단의 #{}는 name다 bean에 써준것과 동일하게 해줘야 하지만
+  	하단id="TitleCheck"일때는 넘어온값 하나이기에 #{title}처럼 아무변수(여기서는title)로 받아줄 수 있다
+  	 -->
+  	<select id="TitleCheck" resultType="int">
+		select count(*) from movie 
+		where title=#{title}
+	</select>
+  	<select id="GetMovie" resultType="myMovie">
+		select * from movie
+		
+		where num=#{num}
+	</select>
+	<update id="UpdateMovie">
+		update movie set title=#{title},continent=#{continent},nation=#{nation},genre=#{genre},grade=#{grade},actor=#{actor}
+		
+		where num=#{num}
+	</update>
+	
+  	
+</mapper>

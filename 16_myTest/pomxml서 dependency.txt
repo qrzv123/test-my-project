@@ -1,0 +1,175 @@
+
+https://mvnrepository.com/에서 aspectjweaver검색하여 사용할 버전 찾았음
+dependency는 jar파일같은 것이라고 생각
+
+<!-- aop --> 
+<dependency>
+	<groupId>org.aspectj</groupId>
+	<artifactId>aspectjweaver</artifactId>
+	<version>1.6.11</version>
+	<scope></scope>
+</dependency>
+
+
+<!-- 유효성검사 하기 위한dependency -->
+<dependency>
+	<groupId>org.hibernate</groupId>
+	<artifactId>hibernate-validator</artifactId>
+	<version>4.2.0.Final</version>
+</dependency>        
+<dependency>
+	<groupId>javax.xml.bind</groupId>
+	<artifactId>jaxb-api</artifactId>
+	<version>2.2.8</version>
+</dependency>
+
+
+
+<!--
+OracleDB관련해서 dependencies위에 작성해줘야하는 코드
+repositories는 mvnrepository 메이븐저장소에서 DB관련한dependency를 가져오지 못하여
+추가적인 저장소를 설정했다고 생각하면 된다
+-->
+<repositories>
+	<repository>
+		<id>oracle</id>
+		<name>ORACLE JDBC Repository</name>
+		<url>http://maven.jahia.org/maven2</url>
+	</repository>
+</repositories>
+
+<!-- Oracle  -->
+<dependency>
+	<groupId>com.oracle</groupId>
+	<artifactId>ojdbc6</artifactId>
+	<version>12.1.0.1</version>
+</dependency>
+
+
+<!-- 하단3개의dependency가 13강에서 새로 활용 -->
+<!-- datasource관련으로 root-context.xml첫번째객체서 연결위해 사용 -->
+<!-- datasource관련으로 db에 연결을 커넥트풀로 해준다(jdbc 드라이버 로드~등을 자동으로)-->
+<dependency>
+	<groupId>commons-dbcp</groupId>
+	<artifactId>commons-dbcp</artifactId>
+	<version>1.4</version>
+</dependency>
+
+<!-- mybatis관련 -->
+<dependency>
+	<groupId>org.mybatis</groupId>
+	<artifactId>mybatis</artifactId>
+	<version>3.1.0</version>
+</dependency>
+<dependency>
+	<groupId>org.mybatis</groupId>
+	<artifactId>mybatis-spring</artifactId>
+	<version>1.1.0</version>
+</dependency>
+============================================================================
+프로젝트 생성시 설정 순서
+1.pom.xml 이상x면
+2.web.xml 로간다
+	root-context.xml만 작성(드라이버로드,계정접속 등)하고 실행시 이상O,
+	2가지 xml설정(작성)해줘야 이상X
+	album-servlet.xml : viewResolver, controller설정후 이상X확인
+
+	web.xml에서 특정 요청에 뭘 보여줄건지 매핑하는것도 잊지 말자
+	
+	Spring과같이 기본 뼈대가 다 갖춰져 있는 것을 Framework라고 한다
+	약간의 코드만 작성함으로써 내부적으로 작동되게 해주는 것이 framework
+	mybatis도 또다른 종류의 Framwor라고 한다
+=========================================================================
+프로젝트 전반에 사용할 설정 root-context.xml서 설정
+
+root-context.xml 객체3개생성 예시
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+		<property name="url" value="jdbc:oracle:thin:@localhost:1521:orcl"/>
+		<property name="username" value="jspid"/>
+		<property name="password" value="jsppw"/>
+	</bean>
+	
+	<bean id="sqlSessionFactoryBean" 
+			class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="configLocation" 
+						value="classpath:/travel/mybatis/SqlMapConfig.xml"/>
+		<property name="mapperLocations">
+			<value>classpath:/travel/mybatis/travel.xml</value>
+		</property>
+	</bean>
+	
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSessionFactoryBean"/>
+	</bean> 
+
+ㅁ맨밑 객체 제외하고 첫번째객체와 2번째객체의 value=""부분은 달라질 수 있다
+ㅁ2번째 객체의
+<property name="configLocation" value="classpath:/travel/mybatis/SqlMapConfig.xml"/>
+<property name="configLocation"> <value>classpath:/travel/mybatis/SqlMapConfig.xml</value></property>
+이 2라인은 동일하다 하나는 value 속성으로 지정, 하나는 value자식으로 지정한 것임
+============================================================================
+하단은root-context.xml서 객체3개만들면서 사용하려고 생성
+src/main/java에서 패키지mybatis만들어서 넣을 xml은 New-XML File로 생성한다
+여기서 생성하는 파일의 !DOCTYPE은
+https://mybatis.org/mybatis-3/ko/getting-started.html여기서 가져오는데
+SqlMapConfig.xml은 "XML에서 SqlSessionFactory 빌드하기" 이부분의 !DOCTYPE가져온다
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+</configuration>
+이부분까지 써줘야 프로젝트 실행시 에러X
+
+동일한 패키지에서 추가로 만들어주는 파일(예시로travel.xml)은
+https://mybatis.org/mybatis-3/ko/getting-started.html여기서 가져오는데
+SqlMapConfig.xml은 "매핑된 SQL 구문 살펴보기" 이부분의 !DOCTYPE가져온다
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="travel.TravelBean">
+  </mapper>
+이부분까지 써줘야 프로젝트 실행시 에러X
+mapper namespace="travel.TravelBean"은 namespace이름 아무거나 쓴것이다
+
+=====================================================
+하단은 web.xml에서 요청을 매핑했기에 이용하려고 생성
+그냥src서 쭉 내려가다 WEB-INF-spring-appServlet에는 예시로(travel-servlet.xml)을 만들어 주는데
+File-New-other-Spring-Spring Bean Configuration File을 생성해주었다
+이때 mvc와 context에 체크했다(beans에도 체크해도 되는데아마 나중에 Namespaces서 확인시 되어있을 것이다)
+해당 파일의 내부에는 상단 주소와같은 것들을 제외하고 하단에
+===travel-servlet.xml===
+<mvc:annotation-driven/>
+
+<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	<property name="prefix" value="/WEB-INF/travel"/>
+	<property name="suffix" value=".jsp"/>
+</bean>
+
+<context:component-scan base-package="travel"></context:component-scan>
+</beans>
+와 같이 작성하는데 <property name="prefix" value="/WEB-INF/travel"/>의 value=""와
+scan부분의 어느 패키지를 스캔하는가의"travel"는 그때그때 설정한다
+
+============================web.xml서 매핑하는거 잊지말기=====================
+<servlet>
+		<servlet-name>appServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/spring/appServlet/servlet-context.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+		
+	<servlet-mapping>
+		<servlet-name>appServlet</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+==>이건 그냥 있던건데 /요청시 DsipatcherServlet이 /WEB-INF/spring/appServlet/servlet-context.xml로 가라고한다

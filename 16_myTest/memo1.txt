@@ -1,0 +1,46 @@
+drop table movie;
+create table movie(
+	num number not null  primary key,
+	title varchar2(20) not null,
+	continent varchar2(20) not null,
+	nation varchar2(25) not null,
+	genre varchar2(60),
+	grade varchar2(5),
+	actor varchar2(50)
+);
+
+drop sequence mv_seq;
+
+create sequence mv_seq
+	increment by 1
+	start with 1 
+	minvalue 1
+	maxvalue 10000
+	nocache;
+
+insert into movie(num,title,continent,nation,genre,grade,actor)
+values(mv_seq.nextval,'외계인','아시아','한국','액션,판타지','15','류준열,김우빈,김태리');
+
+insert into movie(num,title,continent,nation,genre,grade,actor)
+values(mv_seq.nextval,'배트맨','아메리카','미국','코미디,판타지','15','로버트 패틴슨,폴 다노');
+
+
+commit;
+
+select * from movie;
+
+*.mv => movie scan
+web-inf\movie\~~.jsp
+검색 : 장르, 등급, 출연배우
+페이지설정(1페이지에 2개의 레코드)
+
+프로젝트 생성시 설정 순서
+1.pom.xml 이상x면
+2.web.xml 로간다
+	root-context.xml만 작성(드라이버로드,계정접속 등)하고 실행시 이상O,
+	2가지 xml설정(작성)해줘야 이상X
+	album-servlet.xml : viewResolver, controller설정후 이상X확인
+	
+	Spring과같이 기본 뼈대가 다 갖춰져 있는 것을 Framework라고 한다
+	약간의 코드만 작성함으로써 내부적으로 작동되게 해주는 것이 framework
+	mybatis도 또다른 종류의 Framwor라고 한다
