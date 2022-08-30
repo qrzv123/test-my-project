@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="product.model.Product">
+	<select id="GetTotalCount" resultType="int">
+		select count(*) from products
+		<if test="whatColumn == 'name'">
+			where name like #{keyword}
+		</if>
+		<if test="whatColumn == 'contents'">
+			where contents like #{keyword}
+		</if>
+	</select>
+
+	<select id="GetProductList" resultType="MyProduct">
+		select * from products
+		<if test="whatColumn == 'name'">
+			where name like #{keyword}
+		</if>
+		<if test="whatColumn == 'contents'">
+			where contents like #{keyword}
+		</if>
+		order by num desc
+	</select>
+
+	<insert id="productInsert">
+		insert into products
+		values(seqprod.nextval,#{name},#{company},
+		#{image},#{stock},#{price},#{category,jdbcType=VARCHAR},
+		#{contents},#{point},#{inputdate})
+	</insert>
+	
+	<select id="GetProduct" resultType="MyProduct">
+		select * from products
+		
+		where num = #{num}
+	</select>
+
+</mapper>
+<!-- product.xml -->
+<!-- #{category,jdbcType=VARCHAR}는 insertform에서 입력되지 않아서 위와같이 입력해주어야
+VARCHAR의 기본타입인 null로 들어가게 된다
+저거 안쓰려면 ()다써줘야 한다-->
