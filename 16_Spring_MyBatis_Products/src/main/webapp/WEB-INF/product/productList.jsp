@@ -6,6 +6,10 @@ productList.jsp <br>
 	function insert(){
 		location.href="insert.prd";
 	}
+	function update(num,pageNumber){
+		location.href="update.prd?num="+num+"&pageNumber="+pageNumber;
+	}
+
 </script>
 
 <a href="start.jsp">시작 페이지</a>
@@ -48,7 +52,9 @@ productList.jsp <br>
 				<td>${p.contents }</td>
 				<td>${p.price }</td>
 				<td><a href="delete.prd?num=${p.num }&pageNumber=${pageInfo.pageNumber}">삭제</a></td>
-				<td><a href="update.prd?num=${p.num }&pageNumber=${pageInfo.pageNumber}">수정</a></td>
+				<td>
+					<input type="button" value="수정" onclick="update('${p.num}','${pageInfo.pageNumber}')">
+				</td>
 			</tr>
 		</c:forEach>
 	</table>

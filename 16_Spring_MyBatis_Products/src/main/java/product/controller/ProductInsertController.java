@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +36,18 @@ public class ProductInsertController {
 	private ProductDao productDao;
 
 	@RequestMapping(value=command, method = RequestMethod.GET)
-	public String insert() {
-		return getPage;
+	public String insert(HttpSession session) {
+		//로그인 하면 loginInfo session설정을 할것이다 null과 같다는 것은 세션설정 한 것이 없다는 것
+		if(session.getAttribute("loginInfo")==null) {
+			
+			session.setAttribute("destination", "redirect:/insert.prd");//redirect통한 요청은 무조건 get방식이다
+			//로그인후destination라는 이름으로 설정된 redirect:/insert.prd요청을 하기위해 세션설정함 원래 insert.prd하려고해서
+			
+			return "redirect:/loginForm.mem";//로그인 안했으면 MemberLoginController로 가게된다
+		}
+		else {//로그인 했으면
+			return getPage;			
+		}
 	}
 
 	@RequestMapping(value=command, method = RequestMethod.POST)

@@ -55,4 +55,17 @@ public class ProductDao {
 		return pb;
 	}
 
+
+	public void deleteProduct(String num) {
+		int cnt = sqlSessionTemplate.delete(namespace+".DeleteProduct",num);
+		System.out.println("dao서확인하는 cnt :"+cnt);
+	}
+
+
+	public void updateProduct(ProductBean pb) {
+		System.out.println("productNum : " + pb.getNum());
+		int cnt = sqlSessionTemplate.update(namespace+".UpdateProduct",pb);
+		System.out.println("updateProduct method cnt : " + cnt);
+	}
+
 }

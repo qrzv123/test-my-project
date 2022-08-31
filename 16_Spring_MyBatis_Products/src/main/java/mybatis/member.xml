@@ -4,7 +4,33 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="member.model.Member">
+	<insert id="InsertMember">
+		insert into members(id,name,password,gender,hobby,address1,address2,mpoint)
+		values(#{id},#{name},#{password},#{gender},#{hobby},#{address1},#{address2},#{mpoint})
+	</insert>
 	
+	<select id="GetTotalCount" resultType="int">
+		select count(*) from members
+		<if test="whatColumn=='name'">
+			where name like #{keyword}
+		</if>
+		<if test="whatColumn=='gender'">
+			where gender like #{keyword}
+		</if>
+	</select>
+	
+	<select id="GetMemberList" resultType="MyMember">
+		select * from members
+		<if test="whatColumn=='name'">
+			where name like #{keyword}
+		</if>
+		<if test="whatColumn=='gender'">
+			where gender like #{keyword}
+		</if>
+	</select>
+	<select id="GetMember" resultType="MyMember">
+		select * from members
+		where id = #{id}
+	</select>
 </mapper>
 <!-- member.xml -->
-

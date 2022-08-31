@@ -37,6 +37,18 @@
 		
 		where num = #{num}
 	</select>
+	<delete id="DeleteProduct">
+		delete products
+		
+		where num = #{num}
+	</delete>
+	<update id="UpdateProduct">
+ 		update products
+ 		set name=#{name},company=#{company},price=#{price},stock=#{stock},
+ 		point=#{point},contents=#{contents},image=#{image}
+ 		where num=#{num}
+ 	</update>
+	
 
 </mapper>
 <!-- product.xml -->

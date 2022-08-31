@@ -19,7 +19,7 @@ public class ProductBean {
 	//type="file"을 유효성 검사시 NotNull제외 2가지 가능
 	//@NotEmpty(message= "화일 선택 안함1") //유효성 걸린다ok
 	//@NotNull(message= "화일 선택 안함2") //@NotNull은 유효성에 안걸린다  
-	@NotBlank(message= "화일 선택 안함3") //유효성 걸린다ok
+	@NotBlank(message= "화일 선택 안함") //유효성 걸린다ok
 	private String image; // a.jpg
 	private int stock;
 
@@ -45,7 +45,7 @@ public class ProductBean {
 	public void setUpload(MultipartFile upload) { // upload=a.jpg X upload에 a.jpg파일명이 아닌 파일명 관리하는 객체주소가들어있다
 		//System.out.println("setUpload(MultipartFile upload)");
 		this.upload = upload;
-		System.out.println("setUpload upload:" + upload);			//실제 파일명이 들어있는 객체를 upload가 관리
+		System.out.println("setUpload통해 나오는 upload:" + upload);			//실제 파일명이 들어있는 객체를 upload가 관리
 		System.out.println("upload.getName():"+upload.getName());	//이 메서드 사용시 upload가 오게된다
 		//upload.getName()는 MultipartFile클래스의 메서드 getName()이다
 		System.out.println("upload.getOriginalFilename():"+upload.getOriginalFilename());	//getOriginalFilename메서드가 실제 파일명을 가져온다
@@ -70,14 +70,14 @@ public class ProductBean {
 		return name;
 	}
 	public void setName(String name) {
-		System.out.println("setName(String name)");
+		//System.out.println("setName(String name)");
 		this.name = name;
 	}
 	public String getCompany() {
 		return company;
 	}
 	public void setCompany(String company) {
-		System.out.println("setCompany(String company)");
+		//System.out.println("setCompany(String company)");
 		this.company = company;
 	}
 	public String getImage() {
